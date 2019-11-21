@@ -1,6 +1,9 @@
 export const CST = {
     SCENES: {
         LOAD: 'LOAD',
-        MENU: 'MENU'
+        MENU: 'MENU',
+        CARD: 'CARD',
+        FIRE: 'FIRE',
+        TOOL: 'TOOL'
     }
 }

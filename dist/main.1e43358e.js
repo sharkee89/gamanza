@@ -127,7 +127,10 @@ exports.CST = void 0;
 var CST = {
   SCENES: {
     LOAD: 'LOAD',
-    MENU: 'MENU'
+    MENU: 'MENU',
+    CARD: 'CARD',
+    FIRE: 'FIRE',
+    TOOL: 'TOOL'
   }
 };
 exports.CST = CST;
@@ -177,11 +180,56 @@ function (_Phaser$Scene) {
     value: function init() {}
   }, {
     key: "preload",
-    value: function preload() {}
+    value: function preload() {
+      var _this = this;
+
+      // MAIN MENU
+      this.load.image('title_bg', './assets/image/title_bg.jpg');
+      this.load.image('menu_button', './assets/image/menu_button.png');
+      this.load.image('back_button', './assets/image/back.png'); // LOADING BAR
+
+      var loadingBar = this.add.graphics({
+        fillStyle: {
+          color: 0xffffff
+        }
+      });
+      this.load.on('progress', function (percent) {
+        loadingBar.fillRect(0, _this.game.renderer.height / 2, _this.game.renderer.width * percent, 50);
+      });
+      this.load.on('complete', function () {}); // CARDS
+
+      var cardIndex = 0;
+
+      for (var i = 0; i < 55; i++) {
+        if (i !== 13 && i !== 27 && i !== 41) {
+          this.load.spritesheet("card".concat(cardIndex), "assets/sprite/cards/tile0".concat(i, ".png"), {
+            frameHeight: 96,
+            frameWidth: 72
+          });
+          cardIndex++;
+        }
+      } // FIRE
+
+
+      this.load.image('space', 'assets/particles/starfield.jpg');
+      this.load.image('fire1', 'assets/particles/fire1.png');
+      this.load.image('fire2', 'assets/particles/fire2.png');
+      this.load.image('fire3', 'assets/particles/fire3.png');
+      this.load.image('smoke', 'assets/particles/smoke-puff.png');
+      this.load.spritesheet('ball', 'assets/particles/plasmaball.png', {
+        frameHeight: 128,
+        frameWidth: 128
+      }); // TOOL
+
+      this.load.spritesheet('euro', 'assets/sprite/euro.png', {
+        frameHeight: 128,
+        frameWidth: 128
+      });
+    }
   }, {
     key: "create",
     value: function create() {
-      this.scene.start(_CST.CST.SCENES.MENU, 'Hello from Load Scene!');
+      this.scene.start(_CST.CST.SCENES.MENU);
     }
   }]);
 
@@ -189,6 +237,43 @@ function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.LoadScene = LoadScene;
+},{"../CST":"src/CST.js"}],"src/scenes/utils.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createButton;
+exports.createBackButton = createBackButton;
+
+var _CST = require("../CST");
+
+function createButton(button, scene, text, that) {
+  button.setInteractive();
+  button.on('pointerup', function () {
+    that.scene.start(scene);
+  });
+  var txt = that.add.text(0, 0, text, {
+    font: '20px Arial',
+    fill: '#fff',
+    align: 'center'
+  }).setDepth(2);
+  txt.x = button.x - txt.width / 2;
+  txt.y = button.y - txt.height / 2 - 7;
+}
+
+function createBackButton(that, interval) {
+  var btn = that.add.image(that.game.renderer.width - 128, that.game.renderer.height - 128, 'back_button').setDepth(0);
+  btn.setInteractive();
+  btn.on('pointerup', function () {
+    if (interval) {
+      clearInterval(interval);
+    }
+
+    that.scene.start(_CST.CST.SCENES.MENU);
+  });
+  return btn;
+}
 },{"../CST":"src/CST.js"}],"src/scenes/MenuScene.js":[function(require,module,exports) {
 "use strict";
 
@@ -198,6 +283,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.MenuScene = void 0;
 
 var _CST = require("../CST");
+
+var _utils = _interopRequireDefault(require("./utils"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -232,33 +321,398 @@ function (_Phaser$Scene) {
 
   _createClass(MenuScene, [{
     key: "init",
-    value: function init(data) {
-      console.log(data);
-      console.log('I got it');
-    }
+    value: function init() {}
   }, {
     key: "create",
-    value: function create() {}
+    value: function create() {
+      var logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
+        font: '48px Arial',
+        fill: '#fff',
+        align: 'center'
+      }).setDepth(1);
+      logo.x = this.game.renderer.width / 2 - logo.width / 2;
+      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
+      var cardButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
+      var toolButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
+      var fireButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 200, 'menu_button').setDepth(1);
+      (0, _utils.default)(cardButton, _CST.CST.SCENES.CARD, 'Cards', this);
+      (0, _utils.default)(toolButton, _CST.CST.SCENES.TOOL, 'Image/Text Generator', this);
+      (0, _utils.default)(fireButton, _CST.CST.SCENES.FIRE, 'Fire', this);
+    }
   }]);
 
   return MenuScene;
 }(Phaser.Scene);
 
 exports.MenuScene = MenuScene;
-},{"../CST":"src/CST.js"}],"src/main.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/CardScene.js":[function(require,module,exports) {
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CardScene = void 0;
+
+var _CST = require("../CST");
+
+var _utils = require("./utils");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var CardScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(CardScene, _Phaser$Scene);
+
+  function CardScene() {
+    _classCallCheck(this, CardScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(CardScene).call(this, {
+      key: _CST.CST.SCENES.CARD
+    }));
+  }
+
+  _createClass(CardScene, [{
+    key: "init",
+    value: function init() {}
+  }, {
+    key: "preload",
+    value: function preload() {}
+  }, {
+    key: "create",
+    value: function create() {
+      var height = 0;
+      var cards = [];
+      var cardIndex = 0;
+
+      for (var i = 51; i >= 0; i--) {
+        var card = this.add.sprite(100, 50 + height, "card".concat(cardIndex)).setDepth(i);
+        cards.push(card);
+        cardIndex++;
+        height += 10;
+      }
+
+      var secondDeckWidth = 500;
+      var secondDeckHeight = 680;
+      var sDepth = 0;
+      var cardInterval = setInterval(function () {
+        cards[0].x = secondDeckWidth;
+        cards[0].y = secondDeckHeight;
+        cards[0].setDepth(sDepth);
+        secondDeckHeight -= 10;
+        sDepth++;
+        cards.shift();
+
+        if (!cards.length) {
+          clearInterval(cardInterval);
+        }
+      }, 1000);
+      var backButton = (0, _utils.createBackButton)(this, cardInterval);
+    }
+  }]);
+
+  return CardScene;
+}(Phaser.Scene);
+
+exports.CardScene = CardScene;
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/FireScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FireScene = void 0;
+
+var _CST = require("../CST");
+
+var _utils = require("./utils");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var FireScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(FireScene, _Phaser$Scene);
+
+  function FireScene() {
+    _classCallCheck(this, FireScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(FireScene).call(this, {
+      key: _CST.CST.SCENES.FIRE
+    }));
+  }
+
+  _createClass(FireScene, [{
+    key: "init",
+    value: function init() {
+      var fpsText;
+      var particles;
+    }
+  }, {
+    key: "preload",
+    value: function preload() {
+      this.load.image('fire', 'assets/particles/muzzleflash3.png');
+      var backButton = (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      this.fpsText = this.add.text(10, 10, 'FPS: -- \n-- Particles', {
+        font: 'bold 26px Arial',
+        fill: '#ffffff'
+      });
+      this.particles = this.add.particles('fire');
+      this.particles.createEmitter({
+        alpha: {
+          start: 1,
+          end: 0
+        },
+        scale: {
+          start: 0.5,
+          end: 2.5
+        },
+        speed: 20,
+        accelerationY: -300,
+        angle: {
+          min: -85,
+          max: -95
+        },
+        rotate: {
+          min: -180,
+          max: 180
+        },
+        lifespan: {
+          min: 1000,
+          max: 1100
+        },
+        blendMode: 'ADD',
+        frequency: 110,
+        maxParticles: 10,
+        x: 400,
+        y: 300
+      });
+    }
+  }, {
+    key: "update",
+    value: function update(time, delta) {
+      this.fpsText.setText('FPS: ' + (1000 / delta).toFixed(3) + '\n' + this.particles.emitters.first.alive.length + ' Particles');
+    }
+  }]);
+
+  return FireScene;
+}(Phaser.Scene);
+
+exports.FireScene = FireScene;
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/ToolScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ToolScene = void 0;
+
+var _CST = require("../CST");
+
+var _utils = require("./utils");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var ToolScene =
+/*#__PURE__*/
+function (_Phaser$Scene) {
+  _inherits(ToolScene, _Phaser$Scene);
+
+  function ToolScene() {
+    _classCallCheck(this, ToolScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ToolScene).call(this, {
+      key: _CST.CST.SCENES.TOOL
+    }));
+  }
+
+  _createClass(ToolScene, [{
+    key: "init",
+    value: function init() {}
+  }, {
+    key: "preload",
+    value: function preload() {
+      var backButton = (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      var configurations = ['STS', 'SSS', 'SST', 'TST'];
+      var el1;
+      var el2;
+      var el3;
+      var fontSize;
+      setInterval(function () {
+        if (el1) _this.destroy(el1);
+        if (el2) _this.destroy(el2);
+        if (el3) _this.destroy(el3);
+
+        var selectedConfig = configurations[_this.getRandomInt(0, configurations.length - 1)];
+
+        var x = _this.getRandomInt(100, 650);
+
+        var y = _this.getRandomInt(100, 650);
+
+        var fontSize = _this.getRandomInt(14, 42);
+
+        switch (selectedConfig) {
+          case configurations[0]:
+            el1 = _this.displayImage(x, y);
+            el2 = _this.displayText(el1.x + el1.width - 78, y, fontSize);
+            el3 = _this.displayImage(el2.x + el2.width + 20 + fontSize, y);
+            break;
+
+          case configurations[1]:
+            el1 = _this.displayImage(x, y);
+            el2 = _this.displayImage(el1.x + 100, y);
+            el3 = _this.displayImage(el2.x + 100, y);
+            break;
+
+          case configurations[2]:
+            el1 = _this.displayImage(x, y);
+            el2 = _this.displayImage(el1.x + 100, y);
+            el3 = _this.displayText(el2.x + el2.width - 78, y, fontSize);
+            break;
+
+          case configurations[3]:
+            el1 = _this.displayText(x, y, fontSize);
+            el2 = _this.displayImage(el1.x + el1.width + 50, y);
+            el3 = _this.displayText(el2.x + el2.width - 78, y, fontSize);
+            break;
+        }
+      }, 2000);
+    }
+  }, {
+    key: "getRandomInt",
+    value: function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: "destroy",
+    value: function destroy(el) {
+      if (el.type === 'Sprite') {
+        el.destroy();
+      }
+
+      if (el.type === 'Text') {
+        el.setVisible(false);
+      }
+    }
+  }, {
+    key: "displayImage",
+    value: function displayImage(x, y) {
+      return this.add.sprite(x, y, "euro").setScale(0.5);
+    }
+  }, {
+    key: "displayText",
+    value: function displayText(x, y, fontSize) {
+      return this.add.text(x, y, 'Sample text', {
+        font: "".concat(fontSize, "px Arial"),
+        fill: '#fff',
+        align: 'center'
+      });
+    }
+  }]);
+
+  return ToolScene;
+}(Phaser.Scene);
+
+exports.ToolScene = ToolScene;
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/main.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.game = void 0;
 
 var _LoadScene = require("./scenes/LoadScene");
 
 var _MenuScene = require("./scenes/MenuScene");
 
+var _CardScene = require("./scenes/CardScene");
+
+var _FireScene = require("./scenes/FireScene");
+
+var _ToolScene = require("./scenes/ToolScene");
+
 /** @type {import("../typings/phaser")} */
 var game = new Phaser.Game({
-  width: 100,
-  height: 100,
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene]
+  type: Phaser.WEBGL,
+  width: 1024,
+  height: 768,
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _CardScene.CardScene, _FireScene.FireScene, _ToolScene.ToolScene],
+  physics: {
+    default: 'arcade',
+    arcade: {
+      useTree: false,
+      gravity: {
+        y: 100
+      }
+    }
+  },
+  render: {
+    pixelArt: true
+  }
 });
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+exports.game = game;
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js"}],"C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -286,7 +740,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53066" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59388" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -462,5 +916,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
+},{}]},{},["C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
 //# sourceMappingURL=/main.1e43358e.js.map
