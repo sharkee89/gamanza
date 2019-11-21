@@ -7,19 +7,19 @@ export class ToolScene extends Phaser.Scene {
             key: CST.SCENES.TOOL
         })
     }
-    init() {
-
-    }
     preload() {
-        let backButton = createBackButton(this);
+        this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
     }
     create() {
+        if (el1) this.destroy(el1);
+        if (el2) this.destroy(el2);
+        if (el3) this.destroy(el3);
         const configurations = ['STS', 'SSS', 'SST', 'TST'];
         let el1;
         let el2;
         let el3;
         let fontSize;
-        setInterval(() => {
+        let generatorInterval = setInterval(() => {
             if (el1) this.destroy(el1);
             if (el2) this.destroy(el2);
             if (el3) this.destroy(el3);
@@ -50,7 +50,7 @@ export class ToolScene extends Phaser.Scene {
                     break;
             }
         }, 2000);
-        
+        let backButton = createBackButton(this, generatorInterval);
     }
     getRandomInt(min, max) {
         min = Math.ceil(min);

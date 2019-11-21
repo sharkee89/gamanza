@@ -8,7 +8,6 @@ export default function createButton(button, scene, text, that) {
     });
     button.on('pointerover', () => {
         that.game.canvas.style.cursor = "pointer";
-        console.log(scene);
     });
     button.on('pointerout', () => {
         that.game.canvas.style.cursor = "initial";
@@ -19,7 +18,7 @@ export default function createButton(button, scene, text, that) {
         align: 'center'
     }).setDepth(2);
     txt.x = button.x - txt.width / 2;
-    txt.y = button.y - txt.height / 2 - 7;
+    txt.y = button.y - txt.height / 2;
 }
 
 export function createBackButton(that, interval) {
@@ -37,6 +36,6 @@ export function createBackButton(that, interval) {
     btn.on('pointerout', () => {
         that.game.canvas.style.cursor = "initial";
     });
-    btn.setScale(0.3);
+    btn.setScale(0.6);
     return btn;
 }

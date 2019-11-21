@@ -7,24 +7,21 @@ export class CardScene extends Phaser.Scene {
             key: CST.SCENES.CARD
         })
     }
-    init() {
-        
-    }
     preload() {
-
+        this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
     }
     create() {
         let height = 0;
         let cards = [];
         let cardIndex = 0;
         for (let i = 51; i >= 0; i--) {
-            let card = this.add.sprite(100, 50 + height, `card${cardIndex}`).setDepth(i);
+            let card = this.add.sprite(100, 100 + height, `card${cardIndex}`).setDepth(i);
             cards.push(card);
             cardIndex++;
             height += 10;
         }
         let secondDeckWidth = 500;
-        let secondDeckHeight = 680;
+        let secondDeckHeight = 610;
         let sDepth = 0;
         let cardInterval = setInterval(() => {
             cards[0].x = secondDeckWidth;

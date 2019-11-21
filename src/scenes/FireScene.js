@@ -12,6 +12,7 @@ export class FireScene extends Phaser.Scene {
         let particles;
     }
     preload() {
+        this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
         this.load.image('fire', 'assets/particles/muzzleflash3.png');
         let backButton = createBackButton(this);
     }

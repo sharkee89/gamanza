@@ -256,7 +256,6 @@ function createButton(button, scene, text, that) {
   });
   button.on('pointerover', function () {
     that.game.canvas.style.cursor = "pointer";
-    console.log(scene);
   });
   button.on('pointerout', function () {
     that.game.canvas.style.cursor = "initial";
@@ -267,7 +266,7 @@ function createButton(button, scene, text, that) {
     align: 'center'
   }).setDepth(2);
   txt.x = button.x - txt.width / 2;
-  txt.y = button.y - txt.height / 2 - 7;
+  txt.y = button.y - txt.height / 2;
 }
 
 function createBackButton(that, interval) {
@@ -286,7 +285,7 @@ function createBackButton(that, interval) {
   btn.on('pointerout', function () {
     that.game.canvas.style.cursor = "initial";
   });
-  btn.setScale(0.3);
+  btn.setScale(0.6);
   return btn;
 }
 },{"../CST":"src/CST.js"}],"src/scenes/MenuScene.js":[function(require,module,exports) {
@@ -335,18 +334,15 @@ function (_Phaser$Scene) {
   }
 
   _createClass(MenuScene, [{
-    key: "init",
-    value: function init() {}
-  }, {
     key: "create",
     value: function create() {
+      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
       var logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
         font: '48px Arial',
         fill: '#fff',
         align: 'center'
       }).setDepth(1);
       logo.x = this.game.renderer.width / 2 - logo.width / 2;
-      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
       var cardButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
       var toolButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
       var fireButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 200, 'menu_button').setDepth(1);
@@ -404,11 +400,10 @@ function (_Phaser$Scene) {
   }
 
   _createClass(CardScene, [{
-    key: "init",
-    value: function init() {}
-  }, {
     key: "preload",
-    value: function preload() {}
+    value: function preload() {
+      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
+    }
   }, {
     key: "create",
     value: function create() {
@@ -417,14 +412,14 @@ function (_Phaser$Scene) {
       var cardIndex = 0;
 
       for (var i = 51; i >= 0; i--) {
-        var card = this.add.sprite(100, 50 + height, "card".concat(cardIndex)).setDepth(i);
+        var card = this.add.sprite(100, 100 + height, "card".concat(cardIndex)).setDepth(i);
         cards.push(card);
         cardIndex++;
         height += 10;
       }
 
       var secondDeckWidth = 500;
-      var secondDeckHeight = 680;
+      var secondDeckHeight = 610;
       var sDepth = 0;
       var cardInterval = setInterval(function () {
         cards[0].x = secondDeckWidth;
@@ -498,6 +493,7 @@ function (_Phaser$Scene) {
   }, {
     key: "preload",
     value: function preload() {
+      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
       this.load.image('fire', 'assets/particles/muzzleflash3.png');
       var backButton = (0, _utils.createBackButton)(this);
     }
@@ -594,24 +590,24 @@ function (_Phaser$Scene) {
   }
 
   _createClass(ToolScene, [{
-    key: "init",
-    value: function init() {}
-  }, {
     key: "preload",
     value: function preload() {
-      var backButton = (0, _utils.createBackButton)(this);
+      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
     }
   }, {
     key: "create",
     value: function create() {
       var _this = this;
 
+      if (el1) this.destroy(el1);
+      if (el2) this.destroy(el2);
+      if (el3) this.destroy(el3);
       var configurations = ['STS', 'SSS', 'SST', 'TST'];
       var el1;
       var el2;
       var el3;
       var fontSize;
-      setInterval(function () {
+      var generatorInterval = setInterval(function () {
         if (el1) _this.destroy(el1);
         if (el2) _this.destroy(el2);
         if (el3) _this.destroy(el3);
@@ -650,6 +646,7 @@ function (_Phaser$Scene) {
             break;
         }
       }, 2000);
+      var backButton = (0, _utils.createBackButton)(this, generatorInterval);
     }
   }, {
     key: "getRandomInt",
@@ -727,7 +724,7 @@ var game = new Phaser.Game({
   }
 });
 exports.game = game;
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js"}],"C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -755,7 +752,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64547" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54785" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -931,5 +928,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
+},{}]},{},["C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
 //# sourceMappingURL=/main.1e43358e.js.map
