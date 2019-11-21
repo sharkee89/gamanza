@@ -1,9 +1,17 @@
+/** @type {import("../typings/phaser")} */
 import { CST } from '../CST';
 
 export default function createButton(button, scene, text, that) {
     button.setInteractive();
     button.on('pointerup', () => {
         that.scene.start(scene);
+    });
+    button.on('pointerover', () => {
+        that.game.canvas.style.cursor = "pointer";
+        console.log(scene);
+    });
+    button.on('pointerout', () => {
+        that.game.canvas.style.cursor = "initial";
     });
     let txt = that.add.text(0, 0, text, {
         font: '20px Arial',
@@ -15,7 +23,7 @@ export default function createButton(button, scene, text, that) {
 }
 
 export function createBackButton(that, interval) {
-    let btn = that.add.image(that.game.renderer.width - 128, that.game.renderer.height - 128, 'back_button').setDepth(0);
+    let btn = that.add.image(that.game.renderer.width - 64, that.game.renderer.height - 64, 'back_button').setDepth(0);
     btn.setInteractive();
     btn.on('pointerup', () => {
         if (interval) {
@@ -23,5 +31,12 @@ export function createBackButton(that, interval) {
         }
         that.scene.start(CST.SCENES.MENU);
     });
+    btn.on('pointerover', () => {
+        that.game.canvas.style.cursor = "pointer";
+    });
+    btn.on('pointerout', () => {
+        that.game.canvas.style.cursor = "initial";
+    });
+    btn.setScale(0.3);
     return btn;
 }

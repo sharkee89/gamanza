@@ -248,10 +248,18 @@ exports.createBackButton = createBackButton;
 
 var _CST = require("../CST");
 
+/** @type {import("../typings/phaser")} */
 function createButton(button, scene, text, that) {
   button.setInteractive();
   button.on('pointerup', function () {
     that.scene.start(scene);
+  });
+  button.on('pointerover', function () {
+    that.game.canvas.style.cursor = "pointer";
+    console.log(scene);
+  });
+  button.on('pointerout', function () {
+    that.game.canvas.style.cursor = "initial";
   });
   var txt = that.add.text(0, 0, text, {
     font: '20px Arial',
@@ -263,7 +271,7 @@ function createButton(button, scene, text, that) {
 }
 
 function createBackButton(that, interval) {
-  var btn = that.add.image(that.game.renderer.width - 128, that.game.renderer.height - 128, 'back_button').setDepth(0);
+  var btn = that.add.image(that.game.renderer.width - 64, that.game.renderer.height - 64, 'back_button').setDepth(0);
   btn.setInteractive();
   btn.on('pointerup', function () {
     if (interval) {
@@ -272,6 +280,13 @@ function createBackButton(that, interval) {
 
     that.scene.start(_CST.CST.SCENES.MENU);
   });
+  btn.on('pointerover', function () {
+    that.game.canvas.style.cursor = "pointer";
+  });
+  btn.on('pointerout', function () {
+    that.game.canvas.style.cursor = "initial";
+  });
+  btn.setScale(0.3);
   return btn;
 }
 },{"../CST":"src/CST.js"}],"src/scenes/MenuScene.js":[function(require,module,exports) {
@@ -712,7 +727,7 @@ var game = new Phaser.Game({
   }
 });
 exports.game = game;
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js"}],"C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -740,7 +755,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59388" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64547" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -916,5 +931,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/Stefan/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
+},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
 //# sourceMappingURL=/main.1e43358e.js.map
