@@ -8,18 +8,14 @@ export class MenuScene extends Phaser.Scene {
         })
     }
     create() {
-        this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-        let logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
+        const bg = this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
+        let logo = this.add.text(0, this.game.renderer.height * 0.2, 'Stars', {
             font: '48px Arial',
             fill: '#fff',
             align: 'center'
         }).setDepth(1);
         logo.x = this.game.renderer.width / 2 - logo.width / 2;
-        let cardButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
-        let toolButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
-        let fireButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 200, 'menu_button').setDepth(1);
-        createButton(cardButton, CST.SCENES.CARD, 'Cards', this);
-        createButton(toolButton, CST.SCENES.TOOL, 'Image/Text Generator', this);
-        createButton(fireButton, CST.SCENES.FIRE, 'Fire', this);
+        let starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
+        createButton(starFluidButton, CST.SCENES.START_FLUID, 'Star Fluid', this);
     }
 }

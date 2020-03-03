@@ -4,17 +4,19 @@ import { MenuScene } from './scenes/MenuScene';
 import { CardScene } from './scenes/CardScene';
 import { FireScene } from './scenes/FireScene';
 import { ToolScene } from './scenes/ToolScene';
+import { StarFluidScene } from './scenes/StarFluidScene';
 
 export let game = new Phaser.Game({
     type: Phaser.WEBGL,
-    width: 1024,
-    height: 768,
+    width: window.innerWidth - 20,
+    height: window.innerHeight - 20,
     scene: [
         LoadScene,
         MenuScene,
         CardScene,
         FireScene,
-        ToolScene
+        ToolScene,
+        StarFluidScene
     ],
     physics: {
         default: 'arcade',

@@ -53,6 +53,8 @@ export class LoadScene extends Phaser.Scene {
             frameHeight: 128,
             frameWidth: 128
         });
+        // Star Fluid
+        this.load.atlas('backgroundAnim', './assets/image/backgroundAnim.png', './assets/image/backgroundAnim.json');
     }
     create() {
         this.scene.start(CST.SCENES.MENU);

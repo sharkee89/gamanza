@@ -4,6 +4,7 @@ export const CST = {
         MENU: 'MENU',
         CARD: 'CARD',
         FIRE: 'FIRE',
-        TOOL: 'TOOL'
+        TOOL: 'TOOL',
+        START_FLUID: 'STAR_FLUID'
     }
 }
