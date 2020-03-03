@@ -350,7 +350,7 @@ var MenuScene = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       var bg = this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-      var logo = this.add.text(0, this.game.renderer.height * 0.2, 'Stars', {
+      var logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
         font: '48px Arial',
         fill: '#fff',
         align: 'center'
@@ -358,8 +358,8 @@ var MenuScene = /*#__PURE__*/function (_Phaser$Scene) {
       logo.x = this.game.renderer.width / 2 - logo.width / 2;
       var starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
       var starButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
-      (0, _utils.default)(starFluidButton, _CST.CST.SCENES.STAR_FLUID, 'Star Fluid', this);
-      (0, _utils.default)(starButton, _CST.CST.SCENES.STAR, 'Star Random', this);
+      (0, _utils.default)(starFluidButton, _CST.CST.SCENES.STAR_FLUID, 'Zadatak 1', this);
+      (0, _utils.default)(starButton, _CST.CST.SCENES.STAR, 'Zadatak 2', this);
     }
   }]);
 
@@ -727,32 +727,48 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "create",
     value: function create() {
-      var bg = this.add.image(0, 0, 'star_fluid_portrait').setOrigin(0).setDepth(0);
-      bg.setScale(.48);
-      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_01');
+      var bg;
+
+      if (this.game.config.height > this.game.config.width) {
+        bg = this.add.image(0, 0, 'star_fluid_portrait');
+        this.createStarAnimation('portrait');
+      } else {
+        bg = this.add.image(0, 0, 'star_fluid');
+        this.createStarAnimation('landscape');
+      }
+
+      bg.displayHeight = this.sys.game.config.height;
+      bg.scaleX = bg.scaleY;
+      bg.y = this.game.config.height / 2;
+      bg.x = this.game.config.width / 2;
+      (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "createStarAnimation",
+    value: function createStarAnimation(frame) {
+      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_01"));
       this.anims.create({
         key: 'fluid',
         frames: [{
           key: 'backgroundAnim',
-          frame: 'portrait_01'
+          frame: "".concat(frame, "_01")
         }, {
           key: 'backgroundAnim',
-          frame: 'portrait_02'
+          frame: "".concat(frame, "_02")
         }, {
           key: 'backgroundAnim',
-          frame: 'portrait_03'
+          frame: "".concat(frame, "_03")
         }, {
           key: 'backgroundAnim',
-          frame: 'portrait_04'
+          frame: "".concat(frame, "_04")
         }, {
           key: 'backgroundAnim',
-          frame: 'portrait_05'
+          frame: "".concat(frame, "_05")
         }],
         frameRate: 10,
         repeat: -1
       });
       this.backgroundAnim.play('fluid');
-      (0, _utils.createBackButton)(this);
     }
   }]);
 
@@ -809,7 +825,18 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
     value: function create() {
       var _this = this;
 
-      this.add.image(0, 0, 'star_random_portrait').setOrigin(0).setDepth(0);
+      var bg;
+
+      if (this.game.config.height > this.game.config.width) {
+        bg = this.add.image(0, 0, 'star_random_portrait');
+      } else {
+        bg = this.add.image(0, 0, 'star_random');
+      }
+
+      bg.displayHeight = this.sys.game.config.height;
+      bg.scaleX = bg.scaleY;
+      bg.y = this.game.config.height / 2;
+      bg.x = this.game.config.width / 2;
       this.star = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'smallStars_1');
       this.zvezda = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'zvezdica_1');
       var frameNames = this.textures.get('star').getFrameNames().filter(function (frame) {
@@ -914,7 +941,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57173" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50057" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

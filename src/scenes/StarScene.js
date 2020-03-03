@@ -9,7 +9,17 @@ export class StarScene extends Phaser.Scene {
         
     }
     create() {
-        this.add.image(0, 0, 'star_random_portrait').setOrigin(0).setDepth(0);
+        let bg;
+        if (this.game.config.height > this.game.config.width) {
+            bg = this.add.image(0, 0, 'star_random_portrait');
+        } else {
+            bg = this.add.image(0, 0, 'star_random');
+        }
+        bg.displayHeight = this.sys.game.config.height;
+        bg.scaleX = bg.scaleY;
+        bg.y = this.game.config.height / 2;
+        bg.x = this.game.config.width / 2;
+
         this.star = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'smallStars_1');
         this.zvezda = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'zvezdica_1');
         const frameNames = this.textures.get('star').getFrameNames().filter(frame => frame.indexOf('smallStars_') > -1);

@@ -9,37 +9,49 @@ export class StarFluidScene extends Phaser.Scene {
         
     }
     create() {
-        let bg = this.add.image(0, 0, 'star_fluid_portrait').setOrigin(0).setDepth(0);
-        bg.setScale(.48);
-        this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_01');
+        let bg;
+        if (this.game.config.height > this.game.config.width) {
+            bg = this.add.image(0, 0, 'star_fluid_portrait');    
+            this.createStarAnimation('portrait');
+        } else {
+            bg = this.add.image(0, 0, 'star_fluid');    
+            this.createStarAnimation('landscape');
+        }
+        bg.displayHeight = this.sys.game.config.height;
+        bg.scaleX = bg.scaleY;
+        bg.y = this.game.config.height / 2;
+        bg.x = this.game.config.width / 2;
+        createBackButton(this);
+    }
+    createStarAnimation(frame) {
+        this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_01`);
         this.anims.create({
             key: 'fluid',
             frames: [
                 {
                     key: 'backgroundAnim',
-                    frame: 'portrait_01'
+                    frame: `${frame}_01`
                 },
                 {
                     key: 'backgroundAnim',
-                    frame: 'portrait_02'
+                    frame: `${frame}_02`
                 },
                 {
                     key: 'backgroundAnim',
-                    frame: 'portrait_03'
+                    frame: `${frame}_03`
                 },
                 {
                     key: 'backgroundAnim',
-                    frame: 'portrait_04'
+                    frame: `${frame}_04`
                 },
                 {
                     key: 'backgroundAnim',
-                    frame: 'portrait_05'
+                    frame: `${frame}_05`
                 }
             ],
             frameRate: 10,
             repeat: -1
         });
         this.backgroundAnim.play('fluid');
-        createBackButton(this);
     }
 }

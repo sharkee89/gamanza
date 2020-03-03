@@ -9,7 +9,7 @@ export class MenuScene extends Phaser.Scene {
     }
     create() {
         const bg = this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-        let logo = this.add.text(0, this.game.renderer.height * 0.2, 'Stars', {
+        let logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
             font: '48px Arial',
             fill: '#fff',
             align: 'center'
@@ -17,7 +17,7 @@ export class MenuScene extends Phaser.Scene {
         logo.x = this.game.renderer.width / 2 - logo.width / 2;
         let starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
         let starButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
-        createButton(starFluidButton, CST.SCENES.STAR_FLUID, 'Star Fluid', this);
-        createButton(starButton, CST.SCENES.STAR, 'Star Random', this);
+        createButton(starFluidButton, CST.SCENES.STAR_FLUID, 'Zadatak 1', this);
+        createButton(starButton, CST.SCENES.STAR, 'Zadatak 2', this);
     }
 }
