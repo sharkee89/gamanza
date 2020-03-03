@@ -16,6 +16,8 @@ export class MenuScene extends Phaser.Scene {
         }).setDepth(1);
         logo.x = this.game.renderer.width / 2 - logo.width / 2;
         let starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
-        createButton(starFluidButton, CST.SCENES.START_FLUID, 'Star Fluid', this);
+        let starButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
+        createButton(starFluidButton, CST.SCENES.STAR_FLUID, 'Star Fluid', this);
+        createButton(starButton, CST.SCENES.STAR, 'Star Random', this);
     }
 }

@@ -5,6 +5,7 @@ export const CST = {
         CARD: 'CARD',
         FIRE: 'FIRE',
         TOOL: 'TOOL',
-        START_FLUID: 'STAR_FLUID'
+        STAR_FLUID: 'STAR_FLUID',
+        STAR: 'STAR'
     }
 }

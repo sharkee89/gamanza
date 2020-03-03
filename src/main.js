@@ -5,6 +5,7 @@ import { CardScene } from './scenes/CardScene';
 import { FireScene } from './scenes/FireScene';
 import { ToolScene } from './scenes/ToolScene';
 import { StarFluidScene } from './scenes/StarFluidScene';
+import { StarScene } from './scenes/StarScene';
 
 export let game = new Phaser.Game({
     type: Phaser.WEBGL,
@@ -16,7 +17,8 @@ export let game = new Phaser.Game({
         CardScene,
         FireScene,
         ToolScene,
-        StarFluidScene
+        StarFluidScene,
+        StarScene
     ],
     physics: {
         default: 'arcade',

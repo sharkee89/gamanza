@@ -1,5 +1,5 @@
 import { CST } from '../CST';
-import { createBackButton } from './utils';
+import { createBackButton, getRandomInt } from './utils';
 
 export class ToolScene extends Phaser.Scene {
     constructor() {
@@ -23,10 +23,10 @@ export class ToolScene extends Phaser.Scene {
             if (el1) this.destroy(el1);
             if (el2) this.destroy(el2);
             if (el3) this.destroy(el3);
-            let selectedConfig = configurations[this.getRandomInt(0, configurations.length - 1)];
-            let x = this.getRandomInt(100, 650);
-            let y = this.getRandomInt(100, 650);
-            let fontSize = this.getRandomInt(14, 42);
+            let selectedConfig = configurations[getRandomInt(0, configurations.length - 1)];
+            let x = getRandomInt(100, 650);
+            let y = getRandomInt(100, 650);
+            let fontSize = getRandomInt(14, 42);
             switch(selectedConfig) {
                 case configurations[0]:
                     el1 = this.displayImage(x, y);
@@ -52,11 +52,7 @@ export class ToolScene extends Phaser.Scene {
         }, 2000);
         let backButton = createBackButton(this, generatorInterval);
     }
-    getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    
     destroy(el) {
         if (el.type === 'Sprite') {
             el.destroy();

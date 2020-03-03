@@ -36,6 +36,12 @@ export function createBackButton(that, interval) {
     btn.on('pointerout', () => {
         that.game.canvas.style.cursor = "initial";
     });
-    btn.setScale(0.6);
+    btn.setScale(0.15);
     return btn;
+}
+
+export function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

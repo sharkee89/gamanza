@@ -131,7 +131,8 @@ var CST = {
     CARD: 'CARD',
     FIRE: 'FIRE',
     TOOL: 'TOOL',
-    START_FLUID: 'STAR_FLUID'
+    STAR_FLUID: 'STAR_FLUID',
+    STAR: 'STAR'
   }
 };
 exports.CST = CST;
@@ -185,7 +186,11 @@ var LoadScene = /*#__PURE__*/function (_Phaser$Scene) {
       // MAIN MENU
       this.load.image('title_bg', './assets/image/title_bg.jpg');
       this.load.image('menu_button', './assets/image/menu_button.png');
-      this.load.image('back_button', './assets/image/back.png'); // LOADING BAR
+      this.load.image('back_button', './assets/image/back.png');
+      this.load.image('star_random', './assets/image/star-bg.png');
+      this.load.image('star_random_portrait', './assets/image/star-bg-portrait.png');
+      this.load.image('star_fluid', './assets/image/star-fluid-bg.png');
+      this.load.image('star_fluid_portrait', './assets/image/star-fluid-bg-portrait.png'); // LOADING BAR
 
       var loadingBar = this.add.graphics({
         fillStyle: {
@@ -225,7 +230,9 @@ var LoadScene = /*#__PURE__*/function (_Phaser$Scene) {
         frameWidth: 128
       }); // Star Fluid
 
-      this.load.atlas('backgroundAnim', './assets/image/backgroundAnim.png', './assets/image/backgroundAnim.json');
+      this.load.atlas('backgroundAnim', './assets/image/backgroundAnim.png', './assets/image/backgroundAnim.json'); // Star Random
+
+      this.load.atlas('star', './assets/image/star.png', './assets/image/star.json');
     }
   }, {
     key: "create",
@@ -246,6 +253,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = createButton;
 exports.createBackButton = createBackButton;
+exports.getRandomInt = getRandomInt;
 
 var _CST = require("../CST");
 
@@ -286,8 +294,14 @@ function createBackButton(that, interval) {
   btn.on('pointerout', function () {
     that.game.canvas.style.cursor = "initial";
   });
-  btn.setScale(0.6);
+  btn.setScale(0.15);
   return btn;
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 },{"../CST":"src/CST.js"}],"src/scenes/MenuScene.js":[function(require,module,exports) {
 "use strict";
@@ -343,7 +357,9 @@ var MenuScene = /*#__PURE__*/function (_Phaser$Scene) {
       }).setDepth(1);
       logo.x = this.game.renderer.width / 2 - logo.width / 2;
       var starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
-      (0, _utils.default)(starFluidButton, _CST.CST.SCENES.START_FLUID, 'Star Fluid', this);
+      var starButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
+      (0, _utils.default)(starFluidButton, _CST.CST.SCENES.STAR_FLUID, 'Star Fluid', this);
+      (0, _utils.default)(starButton, _CST.CST.SCENES.STAR, 'Star Random', this);
     }
   }]);
 
@@ -600,14 +616,10 @@ var ToolScene = /*#__PURE__*/function (_Phaser$Scene) {
         if (el1) _this.destroy(el1);
         if (el2) _this.destroy(el2);
         if (el3) _this.destroy(el3);
-
-        var selectedConfig = configurations[_this.getRandomInt(0, configurations.length - 1)];
-
-        var x = _this.getRandomInt(100, 650);
-
-        var y = _this.getRandomInt(100, 650);
-
-        var fontSize = _this.getRandomInt(14, 42);
+        var selectedConfig = configurations[(0, _utils.getRandomInt)(0, configurations.length - 1)];
+        var x = (0, _utils.getRandomInt)(100, 650);
+        var y = (0, _utils.getRandomInt)(100, 650);
+        var fontSize = (0, _utils.getRandomInt)(14, 42);
 
         switch (selectedConfig) {
           case configurations[0]:
@@ -636,13 +648,6 @@ var ToolScene = /*#__PURE__*/function (_Phaser$Scene) {
         }
       }, 2000);
       var backButton = (0, _utils.createBackButton)(this, generatorInterval);
-    }
-  }, {
-    key: "getRandomInt",
-    value: function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
   }, {
     key: "destroy",
@@ -685,6 +690,8 @@ exports.StarFluidScene = void 0;
 
 var _CST = require("../CST");
 
+var _utils = require("./utils");
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -710,7 +717,7 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
     _classCallCheck(this, StarFluidScene);
 
     return _possibleConstructorReturn(this, _getPrototypeOf(StarFluidScene).call(this, {
-      key: _CST.CST.SCENES.START_FLUID
+      key: _CST.CST.SCENES.STAR_FLUID
     }));
   }
 
@@ -720,14 +727,9 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "create",
     value: function create() {
-      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_01'); // this.backgroundAnim02 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_02');
-      // this.backgroundAnim03 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_03');
-      // this.backgroundAnim04 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_04');
-      // this.backgroundAnim05 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_05');
-      // var tween = this.add.tween(sprite).to( { alpha: 1 }, 2000, "Linear", true, 0, -1);
-      // let frameNames = this.textures.get('backgroundAnim').getFrameNames();
-      // console.log(frameNames);
-
+      var bg = this.add.image(0, 0, 'star_fluid_portrait').setOrigin(0).setDepth(0);
+      bg.setScale(.48);
+      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', 'portrait_01');
       this.anims.create({
         key: 'fluid',
         frames: [{
@@ -750,6 +752,7 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
         repeat: -1
       });
       this.backgroundAnim.play('fluid');
+      (0, _utils.createBackButton)(this);
     }
   }]);
 
@@ -757,7 +760,91 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.StarFluidScene = StarFluidScene;
-},{"../CST":"src/CST.js"}],"src/main.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/StarScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.StarScene = void 0;
+
+var _CST = require("../CST");
+
+var _utils = require("./utils");
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
+  _inherits(StarScene, _Phaser$Scene);
+
+  function StarScene() {
+    _classCallCheck(this, StarScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(StarScene).call(this, {
+      key: _CST.CST.SCENES.STAR
+    }));
+  }
+
+  _createClass(StarScene, [{
+    key: "preload",
+    value: function preload() {}
+  }, {
+    key: "create",
+    value: function create() {
+      var _this = this;
+
+      this.add.image(0, 0, 'star_random_portrait').setOrigin(0).setDepth(0);
+      this.star = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'smallStars_1');
+      this.zvezda = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'zvezdica_1');
+      var frameNames = this.textures.get('star').getFrameNames().filter(function (frame) {
+        return frame.indexOf('smallStars_') > -1;
+      });
+      var frameZvezdice = this.textures.get('star').getFrameNames().filter(function (zvezdica) {
+        return zvezdica.indexOf('zvezdica_') > -1;
+      });
+      this.showRandomStars(frameNames, this.star, (0, _utils.getRandomInt)(500, 1000), 5);
+      setTimeout(function () {
+        _this.showRandomStars(frameZvezdice, _this.zvezda, (0, _utils.getRandomInt)(500, 1000), 7);
+      }, 500);
+      (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "showRandomStars",
+    value: function showRandomStars(frames, entity, interval, lastElement) {
+      var _this2 = this;
+
+      setInterval(function () {
+        if (entity) {
+          entity.destroy();
+        }
+
+        var frame = frames[(0, _utils.getRandomInt)(0, lastElement)];
+        entity = _this2.add.sprite((0, _utils.getRandomInt)(0 + entity.width / 2, window.innerWidth - entity.width / 2), (0, _utils.getRandomInt)(0 + entity.height / 2, window.innerHeight - entity.height / 2), 'star', frame);
+      }, interval);
+    }
+  }]);
+
+  return StarScene;
+}(Phaser.Scene);
+
+exports.StarScene = StarScene;
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -777,12 +864,14 @@ var _ToolScene = require("./scenes/ToolScene");
 
 var _StarFluidScene = require("./scenes/StarFluidScene");
 
+var _StarScene = require("./scenes/StarScene");
+
 /** @type {import("../typings/phaser")} */
 var game = new Phaser.Game({
   type: Phaser.WEBGL,
   width: window.innerWidth - 20,
   height: window.innerHeight - 20,
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _CardScene.CardScene, _FireScene.FireScene, _ToolScene.ToolScene, _StarFluidScene.StarFluidScene],
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _CardScene.CardScene, _FireScene.FireScene, _ToolScene.ToolScene, _StarFluidScene.StarFluidScene, _StarScene.StarScene],
   physics: {
     default: 'arcade',
     arcade: {
@@ -797,7 +886,7 @@ var game = new Phaser.Game({
   }
 });
 exports.game = game;
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js","./scenes/StarFluidScene":"src/scenes/StarFluidScene.js"}],"../../../.nvm/versions/node/v11.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js","./scenes/StarFluidScene":"src/scenes/StarFluidScene.js","./scenes/StarScene":"src/scenes/StarScene.js"}],"../../../.nvm/versions/node/v11.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -825,7 +914,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61647" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57173" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
