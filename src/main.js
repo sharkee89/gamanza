@@ -1,23 +1,27 @@
 /** @type {import("../typings/phaser")} */
 import { LoadScene } from './scenes/LoadScene';
 import { MenuScene } from './scenes/MenuScene';
-import { CardScene } from './scenes/CardScene';
-import { FireScene } from './scenes/FireScene';
-import { ToolScene } from './scenes/ToolScene';
 import { StarFluidScene } from './scenes/StarFluidScene';
 import { StarScene } from './scenes/StarScene';
+import { StarAtlasScene } from './scenes/StarAtlasScene';
+
+import phaserJuice from '../lib/phaserJuice.min.js';
+
 
 export let game = new Phaser.Game({
     type: Phaser.WEBGL,
     width: window.innerWidth - 20,
     height: window.innerHeight - 20,
+    plugins: {
+        scene: [
+            { key: 'phaserJuice', plugin: phaserJuice, mapping: 'juice' }
+        ]
+    },
     scene: [
         LoadScene,
         MenuScene,
-        CardScene,
-        FireScene,
-        ToolScene,
         StarFluidScene,
+        StarAtlasScene,
         StarScene
     ],
     physics: {

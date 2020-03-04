@@ -128,10 +128,8 @@ var CST = {
   SCENES: {
     LOAD: 'LOAD',
     MENU: 'MENU',
-    CARD: 'CARD',
-    FIRE: 'FIRE',
-    TOOL: 'TOOL',
     STAR_FLUID: 'STAR_FLUID',
+    STAR_ATLAS: 'STAR_ATLAS',
     STAR: 'STAR'
   }
 };
@@ -181,8 +179,18 @@ var LoadScene = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "preload",
     value: function preload() {
-      var _this = this;
-
+      this.loadImages();
+      this.loadAtlas();
+      this.initLoadingBar();
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      this.scene.start(_CST.CST.SCENES.MENU);
+    }
+  }, {
+    key: "loadImages",
+    value: function loadImages() {
       // MAIN MENU
       this.load.image('title_bg', './assets/image/title_bg.jpg');
       this.load.image('menu_button', './assets/image/menu_button.png');
@@ -190,8 +198,22 @@ var LoadScene = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.image('star_random', './assets/image/star-bg.png');
       this.load.image('star_random_portrait', './assets/image/star-bg-portrait.png');
       this.load.image('star_fluid', './assets/image/star-fluid-bg.png');
-      this.load.image('star_fluid_portrait', './assets/image/star-fluid-bg-portrait.png'); // LOADING BAR
+      this.load.image('star_fluid_portrait', './assets/image/star-fluid-bg-portrait.png');
+    }
+  }, {
+    key: "loadAtlas",
+    value: function loadAtlas() {
+      // Star Fluid
+      this.load.atlas('backgroundAnim', './assets/image/backgroundAnim.png', './assets/image/backgroundAnim.json'); // Star Atlas
 
+      this.load.atlas('star', './assets/image/star.png', './assets/image/star.json');
+    }
+  }, {
+    key: "initLoadingBar",
+    value: function initLoadingBar() {
+      var _this = this;
+
+      // LOADING BAR
       var loadingBar = this.add.graphics({
         fillStyle: {
           color: 0xffffff
@@ -200,44 +222,7 @@ var LoadScene = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.on('progress', function (percent) {
         loadingBar.fillRect(0, _this.game.renderer.height / 2, _this.game.renderer.width * percent, 50);
       });
-      this.load.on('complete', function () {}); // CARDS
-
-      var cardIndex = 0;
-
-      for (var i = 0; i < 55; i++) {
-        if (i !== 13 && i !== 27 && i !== 41) {
-          this.load.spritesheet("card".concat(cardIndex), "assets/sprite/cards/tile0".concat(i, ".png"), {
-            frameHeight: 96,
-            frameWidth: 72
-          });
-          cardIndex++;
-        }
-      } // FIRE
-
-
-      this.load.image('space', 'assets/particles/starfield.jpg');
-      this.load.image('fire1', 'assets/particles/fire1.png');
-      this.load.image('fire2', 'assets/particles/fire2.png');
-      this.load.image('fire3', 'assets/particles/fire3.png');
-      this.load.image('smoke', 'assets/particles/smoke-puff.png');
-      this.load.spritesheet('ball', 'assets/particles/plasmaball.png', {
-        frameHeight: 128,
-        frameWidth: 128
-      }); // TOOL
-
-      this.load.spritesheet('euro', 'assets/sprite/euro.png', {
-        frameHeight: 128,
-        frameWidth: 128
-      }); // Star Fluid
-
-      this.load.atlas('backgroundAnim', './assets/image/backgroundAnim.png', './assets/image/backgroundAnim.json'); // Star Random
-
-      this.load.atlas('star', './assets/image/star.png', './assets/image/star.json');
-    }
-  }, {
-    key: "create",
-    value: function create() {
-      this.scene.start(_CST.CST.SCENES.MENU);
+      this.load.on('complete', function () {});
     }
   }]);
 
@@ -349,17 +334,42 @@ var MenuScene = /*#__PURE__*/function (_Phaser$Scene) {
   _createClass(MenuScene, [{
     key: "create",
     value: function create() {
-      var bg = this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-      var logo = this.add.text(0, this.game.renderer.height * 0.2, 'Gamanza Test', {
+      this.setFullBackground();
+      this.setLogo();
+      this.setButtons();
+    }
+  }, {
+    key: "setFullBackground",
+    value: function setFullBackground() {
+      var bg = this.add.image(0, 0, 'title_bg');
+      bg.displayHeight = this.sys.game.config.height;
+      bg.scaleX = bg.scaleY;
+      bg.y = this.game.config.height / 2;
+      bg.x = this.game.config.width / 2;
+    }
+  }, {
+    key: "setLogo",
+    value: function setLogo() {
+      var logo = this.add.text(0, this.game.renderer.height * 0.1, 'Gamanza Test', {
         font: '48px Arial',
         fill: '#fff',
         align: 'center'
       }).setDepth(1);
       logo.x = this.game.renderer.width / 2 - logo.width / 2;
-      var starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'menu_button').setDepth(1);
-      var starButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'menu_button').setDepth(1);
-      (0, _utils.default)(starFluidButton, _CST.CST.SCENES.STAR_FLUID, 'Zadatak 1', this);
-      (0, _utils.default)(starButton, _CST.CST.SCENES.STAR, 'Zadatak 2', this);
+    }
+  }, {
+    key: "setButtons",
+    value: function setButtons() {
+      this.setButton(_CST.CST.SCENES.STAR_FLUID, 'Zadatak 1.1', -50);
+      this.setButton(_CST.CST.SCENES.STAR_ATLAS, 'Zadatak 1.2', 25);
+      this.setButton(_CST.CST.SCENES.STAR, 'Zadatak 2', 100);
+    }
+  }, {
+    key: "setButton",
+    value: function setButton(scene, text, distance) {
+      var starFluidButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + distance, 'menu_button').setDepth(1);
+      starFluidButton.setScale(.2);
+      (0, _utils.default)(starFluidButton, scene, text, this);
     }
   }]);
 
@@ -367,319 +377,6 @@ var MenuScene = /*#__PURE__*/function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.MenuScene = MenuScene;
-},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/CardScene.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CardScene = void 0;
-
-var _CST = require("../CST");
-
-var _utils = require("./utils");
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var CardScene = /*#__PURE__*/function (_Phaser$Scene) {
-  _inherits(CardScene, _Phaser$Scene);
-
-  function CardScene() {
-    _classCallCheck(this, CardScene);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(CardScene).call(this, {
-      key: _CST.CST.SCENES.CARD
-    }));
-  }
-
-  _createClass(CardScene, [{
-    key: "preload",
-    value: function preload() {
-      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-    }
-  }, {
-    key: "create",
-    value: function create() {
-      var height = 0;
-      var cards = [];
-      var cardIndex = 0;
-
-      for (var i = 51; i >= 0; i--) {
-        var card = this.add.sprite(100, 100 + height, "card".concat(cardIndex)).setDepth(i);
-        cards.push(card);
-        cardIndex++;
-        height += 10;
-      }
-
-      var secondDeckWidth = 500;
-      var secondDeckHeight = 610;
-      var sDepth = 0;
-      var cardInterval = setInterval(function () {
-        cards[0].x = secondDeckWidth;
-        cards[0].y = secondDeckHeight;
-        cards[0].setDepth(sDepth);
-        secondDeckHeight -= 10;
-        sDepth++;
-        cards.shift();
-
-        if (!cards.length) {
-          clearInterval(cardInterval);
-        }
-      }, 1000);
-      var backButton = (0, _utils.createBackButton)(this, cardInterval);
-    }
-  }]);
-
-  return CardScene;
-}(Phaser.Scene);
-
-exports.CardScene = CardScene;
-},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/FireScene.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FireScene = void 0;
-
-var _CST = require("../CST");
-
-var _utils = require("./utils");
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var FireScene = /*#__PURE__*/function (_Phaser$Scene) {
-  _inherits(FireScene, _Phaser$Scene);
-
-  function FireScene() {
-    _classCallCheck(this, FireScene);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(FireScene).call(this, {
-      key: _CST.CST.SCENES.FIRE
-    }));
-  }
-
-  _createClass(FireScene, [{
-    key: "init",
-    value: function init() {
-      var fpsText;
-      var particles;
-    }
-  }, {
-    key: "preload",
-    value: function preload() {
-      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-      this.load.image('fire', 'assets/particles/muzzleflash3.png');
-      var backButton = (0, _utils.createBackButton)(this);
-    }
-  }, {
-    key: "create",
-    value: function create() {
-      this.fpsText = this.add.text(10, 10, 'FPS: -- \n-- Particles', {
-        font: 'bold 26px Arial',
-        fill: '#ffffff'
-      });
-      this.particles = this.add.particles('fire');
-      this.particles.createEmitter({
-        alpha: {
-          start: 1,
-          end: 0
-        },
-        scale: {
-          start: 0.5,
-          end: 2.5
-        },
-        speed: 20,
-        accelerationY: -300,
-        angle: {
-          min: -85,
-          max: -95
-        },
-        rotate: {
-          min: -180,
-          max: 180
-        },
-        lifespan: {
-          min: 1000,
-          max: 1100
-        },
-        blendMode: 'ADD',
-        frequency: 110,
-        maxParticles: 10,
-        x: 400,
-        y: 300
-      });
-    }
-  }, {
-    key: "update",
-    value: function update(time, delta) {
-      this.fpsText.setText('FPS: ' + (1000 / delta).toFixed(3) + '\n' + this.particles.emitters.first.alive.length + ' Particles');
-    }
-  }]);
-
-  return FireScene;
-}(Phaser.Scene);
-
-exports.FireScene = FireScene;
-},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/ToolScene.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ToolScene = void 0;
-
-var _CST = require("../CST");
-
-var _utils = require("./utils");
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-var ToolScene = /*#__PURE__*/function (_Phaser$Scene) {
-  _inherits(ToolScene, _Phaser$Scene);
-
-  function ToolScene() {
-    _classCallCheck(this, ToolScene);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(ToolScene).call(this, {
-      key: _CST.CST.SCENES.TOOL
-    }));
-  }
-
-  _createClass(ToolScene, [{
-    key: "preload",
-    value: function preload() {
-      this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0);
-    }
-  }, {
-    key: "create",
-    value: function create() {
-      var _this = this;
-
-      if (el1) this.destroy(el1);
-      if (el2) this.destroy(el2);
-      if (el3) this.destroy(el3);
-      var configurations = ['STS', 'SSS', 'SST', 'TST'];
-      var el1;
-      var el2;
-      var el3;
-      var fontSize;
-      var generatorInterval = setInterval(function () {
-        if (el1) _this.destroy(el1);
-        if (el2) _this.destroy(el2);
-        if (el3) _this.destroy(el3);
-        var selectedConfig = configurations[(0, _utils.getRandomInt)(0, configurations.length - 1)];
-        var x = (0, _utils.getRandomInt)(100, 650);
-        var y = (0, _utils.getRandomInt)(100, 650);
-        var fontSize = (0, _utils.getRandomInt)(14, 42);
-
-        switch (selectedConfig) {
-          case configurations[0]:
-            el1 = _this.displayImage(x, y);
-            el2 = _this.displayText(el1.x + el1.width - 78, y, fontSize);
-            el3 = _this.displayImage(el2.x + el2.width + 20 + fontSize, y);
-            break;
-
-          case configurations[1]:
-            el1 = _this.displayImage(x, y);
-            el2 = _this.displayImage(el1.x + 100, y);
-            el3 = _this.displayImage(el2.x + 100, y);
-            break;
-
-          case configurations[2]:
-            el1 = _this.displayImage(x, y);
-            el2 = _this.displayImage(el1.x + 100, y);
-            el3 = _this.displayText(el2.x + el2.width - 78, y, fontSize);
-            break;
-
-          case configurations[3]:
-            el1 = _this.displayText(x, y, fontSize);
-            el2 = _this.displayImage(el1.x + el1.width + 50, y);
-            el3 = _this.displayText(el2.x + el2.width - 78, y, fontSize);
-            break;
-        }
-      }, 2000);
-      var backButton = (0, _utils.createBackButton)(this, generatorInterval);
-    }
-  }, {
-    key: "destroy",
-    value: function destroy(el) {
-      if (el.type === 'Sprite') {
-        el.destroy();
-      }
-
-      if (el.type === 'Text') {
-        el.setVisible(false);
-      }
-    }
-  }, {
-    key: "displayImage",
-    value: function displayImage(x, y) {
-      return this.add.sprite(x, y, "euro").setScale(0.5);
-    }
-  }, {
-    key: "displayText",
-    value: function displayText(x, y, fontSize) {
-      return this.add.text(x, y, 'Sample text', {
-        font: "".concat(fontSize, "px Arial"),
-        fill: '#fff',
-        align: 'center'
-      });
-    }
-  }]);
-
-  return ToolScene;
-}(Phaser.Scene);
-
-exports.ToolScene = ToolScene;
 },{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/StarFluidScene.js":[function(require,module,exports) {
 "use strict";
 
@@ -728,7 +425,23 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       var bg;
-
+      this.setFullBackground(bg);
+      (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "createStarAnimation",
+    value: function createStarAnimation(frame) {
+      this.backgroundAnim01 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_01"));
+      this.backgroundAnim02 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_02"));
+      this.backgroundAnim03 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_03"));
+      this.backgroundAnim04 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_04"));
+      this.backgroundAnim05 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_05"));
+      var sprites = [this.backgroundAnim01, this.backgroundAnim02, this.backgroundAnim03, this.backgroundAnim04, this.backgroundAnim05];
+      this.startStarAnimation(sprites, 75);
+    }
+  }, {
+    key: "setFullBackground",
+    value: function setFullBackground(bg) {
       if (this.game.config.height > this.game.config.width) {
         bg = this.add.image(0, 0, 'star_fluid_portrait');
         this.createStarAnimation('portrait');
@@ -741,34 +454,31 @@ var StarFluidScene = /*#__PURE__*/function (_Phaser$Scene) {
       bg.scaleX = bg.scaleY;
       bg.y = this.game.config.height / 2;
       bg.x = this.game.config.width / 2;
-      (0, _utils.createBackButton)(this);
     }
   }, {
-    key: "createStarAnimation",
-    value: function createStarAnimation(frame) {
-      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_01"));
-      this.anims.create({
-        key: 'fluid',
-        frames: [{
-          key: 'backgroundAnim',
-          frame: "".concat(frame, "_01")
-        }, {
-          key: 'backgroundAnim',
-          frame: "".concat(frame, "_02")
-        }, {
-          key: 'backgroundAnim',
-          frame: "".concat(frame, "_03")
-        }, {
-          key: 'backgroundAnim',
-          frame: "".concat(frame, "_04")
-        }, {
-          key: 'backgroundAnim',
-          frame: "".concat(frame, "_05")
-        }],
-        frameRate: 10,
-        repeat: -1
-      });
-      this.backgroundAnim.play('fluid');
+    key: "animateStars",
+    value: function animateStars(sprites, time) {
+      var _this = this;
+
+      var _loop = function _loop(i) {
+        setTimeout(function () {
+          _this.juice.fadeInOut(sprites[i]);
+        }, i * time);
+      };
+
+      for (var i = 0; i < sprites.length; i++) {
+        _loop(i);
+      }
+    }
+  }, {
+    key: "startStarAnimation",
+    value: function startStarAnimation(sprites, time) {
+      var _this2 = this;
+
+      this.animateStars(sprites, time);
+      setInterval(function () {
+        _this2.animateStars(sprites, time);
+      }, 4000);
     }
   }]);
 
@@ -823,10 +533,14 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
   }, {
     key: "create",
     value: function create() {
-      var _this = this;
-
       var bg;
-
+      this.setFullBackground(bg);
+      this.setSprites();
+      (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "setFullBackground",
+    value: function setFullBackground(bg) {
       if (this.game.config.height > this.game.config.width) {
         bg = this.add.image(0, 0, 'star_random_portrait');
       } else {
@@ -837,6 +551,12 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
       bg.scaleX = bg.scaleY;
       bg.y = this.game.config.height / 2;
       bg.x = this.game.config.width / 2;
+    }
+  }, {
+    key: "setSprites",
+    value: function setSprites() {
+      var _this = this;
+
       this.star = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'smallStars_1');
       this.zvezda = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'star', 'zvezdica_1');
       var frameNames = this.textures.get('star').getFrameNames().filter(function (frame) {
@@ -849,7 +569,6 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
       setTimeout(function () {
         _this.showRandomStars(frameZvezdice, _this.zvezda, (0, _utils.getRandomInt)(500, 1000), 7);
       }, 500);
-      (0, _utils.createBackButton)(this);
     }
   }, {
     key: "showRandomStars",
@@ -858,11 +577,14 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
 
       setInterval(function () {
         if (entity) {
-          entity.destroy();
+          _this2.juice.fadeOut(entity);
         }
 
         var frame = frames[(0, _utils.getRandomInt)(0, lastElement)];
         entity = _this2.add.sprite((0, _utils.getRandomInt)(0 + entity.width / 2, window.innerWidth - entity.width / 2), (0, _utils.getRandomInt)(0 + entity.height / 2, window.innerHeight - entity.height / 2), 'star', frame);
+        entity.alpha = 0;
+
+        _this2.juice.fadeIn(entity);
       }, interval);
     }
   }]);
@@ -871,7 +593,740 @@ var StarScene = /*#__PURE__*/function (_Phaser$Scene) {
 }(Phaser.Scene);
 
 exports.StarScene = StarScene;
-},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/main.js":[function(require,module,exports) {
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"src/scenes/StarAtlasScene.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.StarAtlasScene = void 0;
+
+var _CST = require("../CST");
+
+var _utils = require("./utils");
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var StarAtlasScene = /*#__PURE__*/function (_Phaser$Scene) {
+  _inherits(StarAtlasScene, _Phaser$Scene);
+
+  function StarAtlasScene() {
+    _classCallCheck(this, StarAtlasScene);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(StarAtlasScene).call(this, {
+      key: _CST.CST.SCENES.STAR_ATLAS
+    }));
+  }
+
+  _createClass(StarAtlasScene, [{
+    key: "preload",
+    value: function preload() {}
+  }, {
+    key: "create",
+    value: function create() {
+      var bg;
+
+      if (this.game.config.height > this.game.config.width) {
+        bg = this.add.image(0, 0, 'star_fluid_portrait');
+        this.createStarAnimation('portrait');
+      } else {
+        bg = this.add.image(0, 0, 'star_fluid');
+        this.createStarAnimation('landscape');
+      }
+
+      bg.displayHeight = this.sys.game.config.height;
+      bg.scaleX = bg.scaleY;
+      bg.y = this.game.config.height / 2;
+      bg.x = this.game.config.width / 2;
+      (0, _utils.createBackButton)(this);
+    }
+  }, {
+    key: "createStarAnimation",
+    value: function createStarAnimation(frame) {
+      this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', "".concat(frame, "_01"));
+      this.anims.create({
+        key: 'fluid',
+        frames: [{
+          key: 'backgroundAnim',
+          frame: "".concat(frame, "_01")
+        }, {
+          key: 'backgroundAnim',
+          frame: "".concat(frame, "_02")
+        }, {
+          key: 'backgroundAnim',
+          frame: "".concat(frame, "_03")
+        }, {
+          key: 'backgroundAnim',
+          frame: "".concat(frame, "_04")
+        }, {
+          key: 'backgroundAnim',
+          frame: "".concat(frame, "_05")
+        }],
+        frameRate: 10,
+        repeat: -1
+      });
+      this.backgroundAnim.play('fluid');
+    }
+  }]);
+
+  return StarAtlasScene;
+}(Phaser.Scene);
+
+exports.StarAtlasScene = StarAtlasScene;
+},{"../CST":"src/CST.js","./utils":"src/scenes/utils.js"}],"lib/phaserJuice.min.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var phaserJuice = /*#__PURE__*/function () {
+  function phaserJuice(scene) {
+    _classCallCheck(this, phaserJuice);
+
+    this.scene = scene, this.options = function (effectOptions, option) {
+      0 === (option = option || {}).x ? option.x = 1e-5 : 0 === option.y && (option.y = 1e-5);
+      var config = {
+        x: option.x || effectOptions.x,
+        y: option.y || effectOptions.y,
+        alpha: option.alpha || effectOptions.alpha,
+        scaleX: option.scaleX || effectOptions.scaleX,
+        scaleY: option.scaleY || effectOptions.scaleY,
+        angle: option.angle || effectOptions.angle,
+        duration: option.duration || effectOptions.duration,
+        yoyo: option.yoyo || effectOptions.yoyo,
+        repeat: option.repeat || effectOptions.repeat,
+        ease: option.ease || effectOptions.ease,
+        delay: option.delay || effectOptions.delay,
+        paused: option.paused || effectOptions.paused,
+        onStart: option.onStart || effectOptions.onStart,
+        onComplete: option.onComplete || effectOptions.onComplete
+      };
+      return config;
+    };
+  }
+
+  _createClass(phaserJuice, [{
+    key: "add",
+    value: function add(target) {
+      return this.target = target, this;
+    }
+  }, {
+    key: "shake",
+    value: function (_shake) {
+      function shake(_x, _x2, _x3) {
+        return _shake.apply(this, arguments);
+      }
+
+      shake.toString = function () {
+        return _shake.toString();
+      };
+
+      return shake;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var shakeConfig = {
+        x: 5,
+        y: 0,
+        duration: 50,
+        yoyo: !0,
+        repeat: 8,
+        ease: "Bounce.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(shakeConfig, config);
+      return this.shakeTween = scene.tweens.add({
+        targets: target,
+        x: target.x + options.x,
+        y: target.y - options.y,
+        duration: options.duration,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && shake.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "shakeY",
+    value: function shakeY(target) {
+      null == target && (target = this.target);
+      var config = {
+        x: 0,
+        y: 5
+      };
+      var shake = this.shake(target, config);
+    }
+  }, {
+    key: "wobble",
+    value: function (_wobble) {
+      function wobble(_x4, _x5, _x6) {
+        return _wobble.apply(this, arguments);
+      }
+
+      wobble.toString = function () {
+        return _wobble.toString();
+      };
+
+      return wobble;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var wobbleConfig = {
+        x: 20,
+        y: 0,
+        duration: 150,
+        yoyo: !0,
+        repeat: 5,
+        ease: "Sine.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(wobbleConfig, config);
+      return this.wobbleTween = scene.tweens.add({
+        targets: target,
+        x: target.x + options.x,
+        y: target.y + options.y,
+        duration: options.duration,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && wobble.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "wobbleY",
+    value: function wobbleY(target) {
+      null == target && (target = this.target);
+      var config = {
+        x: 0,
+        y: 20
+      };
+      var shake = this.wobble(target, config);
+    }
+  }, {
+    key: "scaleUp",
+    value: function scaleUp(target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var growConfig = {
+        scaleX: target.scaleX + .25,
+        scaleY: target.scaleY + .25,
+        duration: 750,
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(growConfig, config);
+      return this.scaleUpTween = scene.tweens.add({
+        targets: target,
+        scaleX: options.scaleX,
+        scaleY: options.scaleY,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && grow.remove();
+        }
+      }), this;
+    }
+  }, {
+    key: "scaleDown",
+    value: function scaleDown(target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var shrinkConfig = {
+        scaleX: target.scaleX - .25,
+        scaleY: target.scaleY - .25,
+        duration: 750,
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(shrinkConfig, config);
+      return this.scaleDown = scene.tweens.add({
+        targets: target,
+        scaleX: options.scaleX,
+        scaleY: options.scaleY,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && shrink.remove();
+        }
+      }), this;
+    }
+  }, {
+    key: "pulse",
+    value: function (_pulse) {
+      function pulse(_x7, _x8, _x9) {
+        return _pulse.apply(this, arguments);
+      }
+
+      pulse.toString = function () {
+        return _pulse.toString();
+      };
+
+      return pulse;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var pulseConfig = {
+        scaleX: 1.25 * target.scaleX,
+        scaleY: 1.25 * target.scaleY,
+        duration: 750,
+        repeat: 2,
+        yoyo: !0,
+        ease: "Quad.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(pulseConfig, config);
+      return this.pulseTween = scene.tweens.add({
+        targets: target,
+        scaleX: options.scaleX,
+        scaleY: options.scaleY,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && pulse.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "flash",
+    value: function flash(target, duration, color) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == duration && (duration = 150), null == color && (color = "0xffffff"), target.setTintFill(color);
+      var flashTimer = scene.time.addEvent({
+        delay: duration,
+        callback: function callback() {
+          target.setTint("0xffffff");
+        },
+        callbackScope: this
+      });
+      return this;
+    }
+  }, {
+    key: "rotate",
+    value: function (_rotate) {
+      function rotate(_x10, _x11, _x12) {
+        return _rotate.apply(this, arguments);
+      }
+
+      rotate.toString = function () {
+        return _rotate.toString();
+      };
+
+      return rotate;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var rotateConfig = {
+        angle: 360,
+        duration: 500,
+        ease: "Circular.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(rotateConfig, config);
+      return this.rotateTween = scene.tweens.add({
+        targets: target,
+        angle: options.angle,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && rotate.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "bounce",
+    value: function (_bounce) {
+      function bounce(_x13, _x14, _x15) {
+        return _bounce.apply(this, arguments);
+      }
+
+      bounce.toString = function () {
+        return _bounce.toString();
+      };
+
+      return bounce;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var bounceConfig = {
+        y: 25,
+        duration: 1e3,
+        ease: "Bounce",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(bounceConfig, config);
+      return this.bounceTween = scene.tweens.add({
+        targets: target,
+        y: target.y + options.y,
+        repeat: options.repeat,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && bounce.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "fadeIn",
+    value: function (_fadeIn) {
+      function fadeIn(_x16, _x17, _x18) {
+        return _fadeIn.apply(this, arguments);
+      }
+
+      fadeIn.toString = function () {
+        return _fadeIn.toString();
+      };
+
+      return fadeIn;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var fadeInConfig = {
+        alpha: 1,
+        duration: 750,
+        ease: "Circular.easeIn",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(fadeInConfig, config);
+      return this.fadeInTween = scene.tweens.add({
+        targets: target,
+        alpha: options.alpha,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && fadeIn.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "fadeOut",
+    value: function (_fadeOut) {
+      function fadeOut(_x19, _x20, _x21) {
+        return _fadeOut.apply(this, arguments);
+      }
+
+      fadeOut.toString = function () {
+        return _fadeOut.toString();
+      };
+
+      return fadeOut;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var fadeOutConfig = {
+        alpha: 0,
+        duration: 750,
+        ease: "Circular.easeOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(fadeOutConfig, config);
+      return this.fadeOutTween = scene.tweens.add({
+        targets: target,
+        alpha: options.alpha,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && fadeOut.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "fadeInOut",
+    value: function (_fadeInOut) {
+      function fadeInOut(_x22, _x23, _x24) {
+        return _fadeInOut.apply(this, arguments);
+      }
+
+      fadeInOut.toString = function () {
+        return _fadeInOut.toString();
+      };
+
+      return fadeInOut;
+    }(function (target, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == destroy && (destroy = !1);
+      var fadeInOutConfig = {
+        alpha: 0,
+        duration: 500,
+        yoyo: !0,
+        repeat: 3,
+        ease: "Circular.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(fadeInOutConfig, config);
+      return this.fadeInOutTween = scene.tweens.add({
+        targets: target,
+        alpha: options.alpha,
+        duration: options.duration,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && fadeInOut.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "flipX",
+    value: function (_flipX) {
+      function flipX(_x25, _x26, _x27, _x28) {
+        return _flipX.apply(this, arguments);
+      }
+
+      flipX.toString = function () {
+        return _flipX.toString();
+      };
+
+      return flipX;
+    }(function (target, direction, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == direction && (direction = !0), null == destroy && (destroy = !1);
+      var flipXConfig = {
+        scaleX: direction = direction ? -1 : 1,
+        duration: 500,
+        ease: "Sine.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(flipXConfig, config);
+      return this.flipXTween = scene.tweens.add({
+        targets: target,
+        scaleX: options.scaleX,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && flipX.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "flipY",
+    value: function (_flipY) {
+      function flipY(_x29, _x30, _x31, _x32) {
+        return _flipY.apply(this, arguments);
+      }
+
+      flipY.toString = function () {
+        return _flipY.toString();
+      };
+
+      return flipY;
+    }(function (target, direction, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == direction && (direction = !0), null == destroy && (destroy = !1);
+      var flipYConfig = {
+        scaleY: direction = direction ? -1 : 1,
+        duration: 500,
+        ease: "Sine.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(flipYConfig, config);
+      return this.flipYTween = scene.tweens.add({
+        targets: target,
+        scaleY: options.scaleY,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && flipY.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "spinX",
+    value: function (_spinX) {
+      function spinX(_x33, _x34, _x35, _x36) {
+        return _spinX.apply(this, arguments);
+      }
+
+      spinX.toString = function () {
+        return _spinX.toString();
+      };
+
+      return spinX;
+    }(function (target, direction, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == direction && (direction = !0), null == destroy && (destroy = !1);
+      var spinXConfig = {
+        scaleX: direction = direction ? -1 : 1,
+        duration: 500,
+        yoyo: !0,
+        repeat: 3,
+        ease: "Sine.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(spinXConfig, config);
+      return this.spinXTween = scene.tweens.add({
+        targets: target,
+        scaleX: options.scaleX,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && spinX.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "spinY",
+    value: function (_spinY) {
+      function spinY(_x37, _x38, _x39, _x40) {
+        return _spinY.apply(this, arguments);
+      }
+
+      spinY.toString = function () {
+        return _spinY.toString();
+      };
+
+      return spinY;
+    }(function (target, direction, config, destroy) {
+      var scene = this.scene;
+      null == target && (target = this.target), null == direction && (direction = !0), null == destroy && (destroy = !1);
+      var spinYConfig = {
+        scaleY: direction = direction ? -1 : 1,
+        duration: 500,
+        yoyo: !0,
+        repeat: 3,
+        ease: "Sine.easeInOut",
+        delay: 0,
+        paused: !1
+      };
+      var options = this.options(spinYConfig, config);
+      return this.spinYTween = scene.tweens.add({
+        targets: target,
+        scaleY: options.scaleY,
+        yoyo: options.yoyo,
+        repeat: options.repeat,
+        duration: options.duration,
+        ease: options.ease,
+        delay: options.delay,
+        paused: options.paused,
+        onStart: function onStart(tween, target) {
+          void 0 !== options.onStart && options.onStart(tween, target);
+        },
+        onComplete: function onComplete(tween, target) {
+          void 0 !== options.onComplete && options.onComplete(tween, target), destroy && spinY.remove();
+        }
+      }), this;
+    })
+  }, {
+    key: "reset",
+    value: function reset(target) {
+      return null == target && (target = this.target), target.setAlpha(1), target.setScale(1), target.setAngle(0), target.setTint("0xffffff"), this;
+    }
+  }]);
+
+  return phaserJuice;
+}();
+
+exports.default = phaserJuice;
+},{}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -883,22 +1338,29 @@ var _LoadScene = require("./scenes/LoadScene");
 
 var _MenuScene = require("./scenes/MenuScene");
 
-var _CardScene = require("./scenes/CardScene");
-
-var _FireScene = require("./scenes/FireScene");
-
-var _ToolScene = require("./scenes/ToolScene");
-
 var _StarFluidScene = require("./scenes/StarFluidScene");
 
 var _StarScene = require("./scenes/StarScene");
+
+var _StarAtlasScene = require("./scenes/StarAtlasScene");
+
+var _phaserJuiceMin = _interopRequireDefault(require("../lib/phaserJuice.min.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** @type {import("../typings/phaser")} */
 var game = new Phaser.Game({
   type: Phaser.WEBGL,
   width: window.innerWidth - 20,
   height: window.innerHeight - 20,
-  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _CardScene.CardScene, _FireScene.FireScene, _ToolScene.ToolScene, _StarFluidScene.StarFluidScene, _StarScene.StarScene],
+  plugins: {
+    scene: [{
+      key: 'phaserJuice',
+      plugin: _phaserJuiceMin.default,
+      mapping: 'juice'
+    }]
+  },
+  scene: [_LoadScene.LoadScene, _MenuScene.MenuScene, _StarFluidScene.StarFluidScene, _StarAtlasScene.StarAtlasScene, _StarScene.StarScene],
   physics: {
     default: 'arcade',
     arcade: {
@@ -913,7 +1375,7 @@ var game = new Phaser.Game({
   }
 });
 exports.game = game;
-},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/CardScene":"src/scenes/CardScene.js","./scenes/FireScene":"src/scenes/FireScene.js","./scenes/ToolScene":"src/scenes/ToolScene.js","./scenes/StarFluidScene":"src/scenes/StarFluidScene.js","./scenes/StarScene":"src/scenes/StarScene.js"}],"../../../.nvm/versions/node/v11.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./scenes/LoadScene":"src/scenes/LoadScene.js","./scenes/MenuScene":"src/scenes/MenuScene.js","./scenes/StarFluidScene":"src/scenes/StarFluidScene.js","./scenes/StarScene":"src/scenes/StarScene.js","./scenes/StarAtlasScene":"src/scenes/StarAtlasScene.js","../lib/phaserJuice.min.js":"lib/phaserJuice.min.js"}],"C:/Users/Desk/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -941,7 +1403,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50057" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56518" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -1117,5 +1579,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../.nvm/versions/node/v11.6.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
+},{}]},{},["C:/Users/Desk/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/main.js"], null)
 //# sourceMappingURL=/main.1e43358e.js.map

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Run npm install -g parcel-bundler http-server
+Run ### npm install -g parcel-bundler http-server
 
 ## Commands
 

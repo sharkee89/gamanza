@@ -3,55 +3,55 @@ import { createBackButton } from './utils';
 
 export class StarFluidScene extends Phaser.Scene {
     constructor() {
-        super({key: CST.SCENES.STAR_FLUID});
+        super({ key: CST.SCENES.STAR_FLUID });
     }
     preload() {
-        
+
     }
     create() {
         let bg;
+        this.setFullBackground(bg);
+        createBackButton(this);
+    }
+    createStarAnimation(frame) {
+        this.backgroundAnim01 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_01`);
+        this.backgroundAnim02 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_02`);
+        this.backgroundAnim03 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_03`);
+        this.backgroundAnim04 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_04`);
+        this.backgroundAnim05 = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_05`);
+        const sprites = [
+            this.backgroundAnim01,
+            this.backgroundAnim02,
+            this.backgroundAnim03,
+            this.backgroundAnim04,
+            this.backgroundAnim05,
+        ];
+        this.startStarAnimation(sprites, 75);
+    }
+    setFullBackground(bg) {
         if (this.game.config.height > this.game.config.width) {
-            bg = this.add.image(0, 0, 'star_fluid_portrait');    
+            bg = this.add.image(0, 0, 'star_fluid_portrait');
             this.createStarAnimation('portrait');
         } else {
-            bg = this.add.image(0, 0, 'star_fluid');    
+            bg = this.add.image(0, 0, 'star_fluid');
             this.createStarAnimation('landscape');
         }
         bg.displayHeight = this.sys.game.config.height;
         bg.scaleX = bg.scaleY;
         bg.y = this.game.config.height / 2;
         bg.x = this.game.config.width / 2;
-        createBackButton(this);
     }
-    createStarAnimation(frame) {
-        this.backgroundAnim = this.add.sprite(window.innerWidth / 2, window.innerHeight / 2, 'backgroundAnim', `${frame}_01`);
-        this.anims.create({
-            key: 'fluid',
-            frames: [
-                {
-                    key: 'backgroundAnim',
-                    frame: `${frame}_01`
-                },
-                {
-                    key: 'backgroundAnim',
-                    frame: `${frame}_02`
-                },
-                {
-                    key: 'backgroundAnim',
-                    frame: `${frame}_03`
-                },
-                {
-                    key: 'backgroundAnim',
-                    frame: `${frame}_04`
-                },
-                {
-                    key: 'backgroundAnim',
-                    frame: `${frame}_05`
-                }
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        this.backgroundAnim.play('fluid');
+    animateStars(sprites, time) {
+        for (let i = 0; i < sprites.length; i++) {
+            setTimeout(() => {
+                this.juice.fadeInOut(sprites[i]);
+            }, i * time);
+        }
+    }
+    startStarAnimation(sprites, time) {
+        this.animateStars(sprites, time);
+        setInterval(() => {
+            this.animateStars(sprites, time);
+        }, 4000)
     }
 }
